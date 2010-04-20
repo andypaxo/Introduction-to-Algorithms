@@ -12,15 +12,41 @@ It is not the same as a pancake.
 */
 
 class flapstack {
-	// List of pancake sizes, bottom first
+	// List of pancake sizes, top first
 	list<int> pancakes;
+	// Target list
+	list<int> sorted;
+	bool initialised;
+	
+	int position;
+	
+	void initialise();
 	
 	public:
 		void add(int);
+		bool flipOne(int*);
 };
 
 void flapstack::add(int size) {
-	pancakes.push_front(size);
+	pancakes.push_back(size);
+}
+
+void flapstack::initialise() {
+	initialised = true;
+	
+	sorted = list<int>(pancakes);
+	sorted.sort();
+	
+	position = pancakes.size() - 1;
+}
+
+bool flapstack::flipOne(int* nextFlip) {
+	if (!initialised)
+		initialise();
+	
+	// TODO : Watch out that we don't try to flip only one pancake - they're already cooked
+
+	return false;
 }
 
 void writeFlips(flapstack stack) {
