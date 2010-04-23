@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 #include <list>
 #include <string>
 #include <sstream>
@@ -13,49 +14,85 @@ It is not the same as a pancake.
 
 class flapstack {
 	// List of pancake sizes, top first
-	list<int> pancakes;
+	vector<int> pancakes;
+	bool findNext(vector<int>, int*, int*);
+	void recordFlip(int, vector<int>);
 	
 	public:
 		void add(int);
-		list<int> makeFlips(int*);
+		vector<int> makeFlips();
 };
 
 void flapstack::add(int size) {
 	pancakes.push_back(size);
 }
 
-list<int> flapstack::makeFlips(int* nextFlip) {
+bool flapstack::findNext(vector<int> sorted, int* nextPosition, int* positionOfTarget) {
+	int cPos = *nextPosition - 1;
+	
+	// TODO : Make sure that this can't overrun the length of the list
+	// Find first mismatch
+	while (sorted[cPos] == pancakes[cPos] && cPos >= 0)
+		cPos--;
+		
+	*nextPosition = cPos;
+	
+	if (cPos <= 0)
+		return false;
+	
+	// Find position of target
+	int targetValue = sorted[cPos];
+	while (sorted[cPos] != targetValue && cPos < pancakes.size())
+		cPos++;
+		
+	*positionOfTarget = cPos;
+	
+	return true;
+}
+
+void flapstack::recordFlip(int position, vector<int> flips) {
+	if (position == 0)
+		return;
+
+	// TODO : IMPLEMENT flip
+	
+	int outputPos = pancakes.size() - position;
+	flips.push_back(outputPos);	
+	cout << outputPos << " ";
+}
+
+vector<int> flapstack::makeFlips() {
 	// The list we want to construct via flips
 	// At the end of the method, both the pancakes and sorted lists should be identical
-	list<int>sorted = list<int>(pancakes);
-	sorted.sort();
+	list<int> sortedList = list<int>(pancakes.begin(), pancakes.end());
+	sortedList.sort();
+	vector<int>sorted = vector<int>(sortedList.begin(), sortedList.end());
 	
 	// List of flip manuvers to make, this will be output
-	list<int> flips;
+	vector<int> flips;
 	
 	// The first position that contains a pancake of the wrong size
-	int nextPosition -1;
+	int nextPosition = pancakes.size();
 	int positionOfTarget;
 	
 	// Find the lowest position in the stack that doesn't contain the right pancake
 	// Find the position of pancake that should be there
 	// (If we reach the top without finding any, STOP)
-	while (findNext(sorted, *nextPosition, *positionOfTarget)) {
-	
-		int positionOfTarget = 
-		
+	while (findNext(sorted, &nextPosition, &positionOfTarget)) {		
 		// Flip at the position of the right pancake to get it to the top (+output)
 		// (If the right one is already at the top, skip this step)
+		recordFlip(positionOfTarget, flips);
 		
 		// Flip at the out of sequence position to get the right pancake there (+output)
-			
+		recordFlip(nextPosition + 1, flips);
 	}
 
 	return flips;
 }
 
 void writeFlips(flapstack stack) {
-	
+	vector<int> flips = stack.makeFlips();
+	cout << "0" << endl;
 }
 
 flapstack readStack(string line) {
@@ -77,6 +114,7 @@ int main() {
 	string line;
 	while (getline(cin, line))
 	{
+		cout << line << " - ";
 		flapstack current = readStack(line);
 		writeFlips(current);
 	}
